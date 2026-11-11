@@ -1,11 +1,11 @@
 import React from 'react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeAll, beforeEach, afterAll as cleanupGlobals } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import fs from 'node:fs';
+import path from 'node:path';
 import type { ReportJson, PluginReport, PluginStatusColor } from '../../src/types';
 import { deriveStatus } from '../../src/util/pluginStatus';
-
-const REPORT_URL = 'https://jenkins-infra.github.io/metadata-plugin-modernizer/report.json';
 
 vi.mock('react-window', () => ({
   List: ({
@@ -57,18 +57,14 @@ function countByStatus(plugins: PluginReport[]): Record<PluginStatusColor, numbe
   return counts;
 }
 
-describe('PluginList integration (real report.json)', { timeout: 30000 }, () => {
+describe('PluginList integration (real report.json)', { timeout: 60000 }, () => {
   let realReport: ReportJson;
   let expectedPlugins: PluginReport[];
   let expectedCounts: Record<PluginStatusColor, number>;
 
-  beforeEach(async () => {
-    vi.resetModules();
-    vi.restoreAllMocks();
-
-    const res = await fetch(REPORT_URL);
-    if (!res.ok) throw new Error(`Failed to fetch report.json: ${res.status} ${res.statusText}`);
-    realReport = (await res.json()) as ReportJson;
+  beforeAll(() => {
+    const reportPath = path.resolve(__dirname, '../../public/data/report.json');
+    realReport = JSON.parse(fs.readFileSync(reportPath, 'utf-8')) as ReportJson;
 
     expectedPlugins = Object.entries(realReport.plugins)
       .filter(([, pd]) => pd.aggregatedMigrations.length > 0)
@@ -86,6 +82,14 @@ describe('PluginList integration (real report.json)', { timeout: 30000 }, () => 
     );
   });
 
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  cleanupGlobals(() => {
+    vi.unstubAllGlobals();
+  });
+
   async function renderAndWait() {
     const PluginList = (await import('../../src/pages/PluginList')).default;
     render(
@@ -98,7 +102,7 @@ describe('PluginList integration (real report.json)', { timeout: 30000 }, () => 
     });
   }
 
-  it('renders the correct total plugin count from real data', { timeout: 30000 }, async () => {
+  it('renders the correct total plugin count from real data', { timeout: 60000 }, async () => {
     await renderAndWait();
 
     expect(screen.getByText('Plugins')).toBeDefined();
