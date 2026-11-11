@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, it, expect, vi, beforeAll, beforeEach, afterAll } from 'vitest';
+import { describe, it, expect, vi, beforeAll, beforeEach, afterAll as cleanupGlobals } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import fs from 'node:fs';
@@ -86,7 +86,7 @@ describe('PluginList integration (real report.json)', { timeout: 60000 }, () => 
     vi.clearAllMocks();
   });
 
-  afterAll(() => {
+  cleanupGlobals(() => {
     vi.unstubAllGlobals();
   });
 
