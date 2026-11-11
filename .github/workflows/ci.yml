@@ -114,12 +114,12 @@ jobs:
         # so a branch name or repo name containing shell metacharacters cannot
         # escape the string assignment.
         env:
-          PR_NUMBER:    ${{ github.event.pull_request.number }}
-          PR_HEAD_SHA:  ${{ github.event.pull_request.head.sha }}
-          PR_HEAD_REF:  ${{ github.event.pull_request.head.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
           PR_BASE_REPO: ${{ github.event.pull_request.base.repo.full_name }}
-          PR_BASE_REF:  ${{ github.event.pull_request.base.ref }}
+          PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
           mkdir -p pr-metadata
           printf '%s' 'deploy'          > pr-metadata/pr-action
@@ -163,12 +163,12 @@ jobs:
         # All values come from the event payload and are passed through env
         # variables, not interpolated directly into the shell script text.
         env:
-          PR_NUMBER:    ${{ github.event.pull_request.number }}
-          PR_HEAD_SHA:  ${{ github.event.pull_request.head.sha }}
-          PR_HEAD_REF:  ${{ github.event.pull_request.head.ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
           PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
           PR_BASE_REPO: ${{ github.event.pull_request.base.repo.full_name }}
-          PR_BASE_REF:  ${{ github.event.pull_request.base.ref }}
+          PR_BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
           mkdir -p pr-metadata
           printf '%s' 'closed'          > pr-metadata/pr-action
