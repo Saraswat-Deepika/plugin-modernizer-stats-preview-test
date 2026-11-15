@@ -37,6 +37,13 @@ jobs:
 
       - run: npm run format:check
 
+      - name: Fetch report.json from canonical source
+        run: |
+          mkdir -p public/data
+          curl -sSf \
+            https://jenkins-infra.github.io/metadata-plugin-modernizer/report.json \
+            -o public/data/report.json
+
       - run: npm run test
 
       - run: npm run build
